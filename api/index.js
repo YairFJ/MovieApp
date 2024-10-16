@@ -4,7 +4,9 @@ import { PORT } from './config.js';
 
 import indexRoutes from './routes/index.routes.js';
 
+
 import pelisRouters from './routes/pelis.routes.js';
+import actorRouters from './routes/actor.routes.js';
 
 import seriesRouters from './routes/series.routes.js'
 
@@ -19,6 +21,7 @@ app.use('/api', indexRoutes)
 
 // Definimos las rutas de la API para las películas, también bajo el prefijo '/api'
 app.use('/api', pelisRouters)
+app.use('/api',actorRouters)
 
 
 // Definimos las rutas de la API para las series, también bajo el prefijo '/api'
