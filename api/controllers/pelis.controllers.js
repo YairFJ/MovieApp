@@ -33,7 +33,7 @@ export const createPeli = async (req, res) => {
         // Obtenemos los datos de la nueva pelicula desde el cuerpo de la solicitud
         const {titulo, descripcion, duracion, genero_id, fecha_lanzamiento, portada, actor_id} = req.body
         // Insertamos la nueva pelicula en la base de datos
-        const[result] = await pool.query('INSERT INTO peliculas(titulo, descripcion, duracion, genero_id, fecha_lanzamiento, portada, actor_id) VALUES (?,?,?,?,?,?,?)',
+        const[result] = await pool.query('INSERT INTO peliculas (titulo, descripcion, duracion, genero_id, fecha_lanzamiento, portada, actor_id) VALUES (?,?,?,?,?,?,?)',
             [titulo, descripcion, duracion, genero_id, fecha_lanzamiento, portada, actor_id])
         // Devolvemos la nueva pelicula agregada junto con su ID
         res.send ({
@@ -47,6 +47,7 @@ export const createPeli = async (req, res) => {
             actor_id
         })
     }catch(error){
+        res.json(error)
         res.status(500).json({message: 'Internal server error'})
     }
 }
