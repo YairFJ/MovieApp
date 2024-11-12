@@ -18,7 +18,7 @@ function MovieBd() {
   };
 
   const deletePelis = async (id) => {
-    await axios.delete(`${URI}/${id}`); // Corregido el uso de backticks
+    await axios.delete(`${URI}/${id}`); 
     getPelis();
   };
 
