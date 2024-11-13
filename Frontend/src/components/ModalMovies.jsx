@@ -81,14 +81,18 @@ function ModalMovies({ show, handleClose }) {
         fecha_lanzamiento: '',
         portada: null,
       });
+
+      // Cerrar el modal después de guardar
+      handleClose();
+
     } catch (error) {
       console.error('Error al guardar la película:', error);
     }
   };
 
   return (
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header>
+    <Modal show={show} onHide={handleClose} backdrop="static">
+      <Modal.Header closeButton>
         <Modal.Title className="title-modal">Agregar Película</Modal.Title>
       </Modal.Header>
 
@@ -130,6 +134,10 @@ function ModalMovies({ show, handleClose }) {
               <TextField {...params} label="Genero" />
             )}
           />
+
+          <Stack spacing={1}>
+              <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+          </Stack>
 
           <label htmlFor="fecha_lanzamiento">Fecha Lanzamiento</label>
           <input
