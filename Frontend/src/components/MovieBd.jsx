@@ -33,7 +33,7 @@ function MovieBd() {
           />
           <div className="movie-info">
             <div className="movie-title">{peli.titulo}</div>
-            <div className="movie-rating">{peli.descripcion}</div>
+            <div className="movie-rating">{peli.rating} / 5.0</div>
           </div>
         </div>
       ))}
