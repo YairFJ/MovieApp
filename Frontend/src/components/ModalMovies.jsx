@@ -32,6 +32,7 @@ function ModalMovies({ show, handleClose }) {
     genero: '',
     fecha_lanzamiento: '',
     portada: null,
+    rating: 2.5, // Añadimos el campo para rating
   });
 
   // Manejar cambios en los inputs de texto
@@ -46,10 +47,18 @@ function ModalMovies({ show, handleClose }) {
   // Manejar cambios en el input de archivo
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    console.log('Portada seleccionada:', file); // Verificar que el archivo se está seleccionando
+    console.log('Portada seleccionada:', file);
     setFormData({
       ...formData,
       portada: file,
+    });
+  };
+
+  // Manejar cambios en el rating
+  const handleRatingChange = (event, newValue) => {
+    setFormData({
+      ...formData,
+      rating: newValue, // Actualizamos el valor del rating
     });
   };
 
@@ -80,11 +89,11 @@ function ModalMovies({ show, handleClose }) {
         genero: '',
         fecha_lanzamiento: '',
         portada: null,
+        rating: 2.5, // Resetear el rating
       });
 
       // Cerrar el modal después de guardar
       handleClose();
-
     } catch (error) {
       console.error('Error al guardar la película:', error);
     }
@@ -136,7 +145,13 @@ function ModalMovies({ show, handleClose }) {
           />
 
           <Stack spacing={1}>
-              <Rating name="half-rating" defaultValue={2.5} precision={0.5} />
+            <label htmlFor="">Rating</label>
+            <Rating
+              name="half-rating"
+              value={formData.rating}
+              precision={0.5}
+              onChange={handleRatingChange}
+            />
           </Stack>
 
           <label htmlFor="fecha_lanzamiento">Fecha Lanzamiento</label>

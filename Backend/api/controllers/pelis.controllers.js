@@ -30,23 +30,21 @@ export const getPeli = async (req, res) => {
 
 export const createPeli = async (req, res) => {
     try {
-        
-        const { titulo, descripcion, duracion, genero, fecha_lanzamiento } = req.body;
+        // Desestructurar los campos, incluido el rating
+        const { titulo, descripcion, duracion, genero, fecha_lanzamiento, rating } = req.body;
 
-        
-        const portadaPath = req.file ? 'portadas/' + req.file.filename : null; // La ruta relativa del archivo subido
+        const portadaPath = req.file ? 'portadas/' + req.file.filename : null; // Ruta relativa de la portada
 
         if (!portadaPath) {
             return res.status(400).json({ message: 'No se ha subido una portada válida.' });
         }
 
-        
+        // Incluir el rating en la consulta de inserción
         const [result] = await pool.query(
-            'INSERT INTO peliculas (titulo, descripcion, duracion, genero, fecha_lanzamiento, portada) VALUES (?,?,?,?,?,?)',
-            [titulo, descripcion, duracion, genero, fecha_lanzamiento, portadaPath]
+            'INSERT INTO peliculas (titulo, descripcion, duracion, genero, fecha_lanzamiento, portada, rating) VALUES (?,?,?,?,?,?,?)',
+            [titulo, descripcion, duracion, genero, fecha_lanzamiento, portadaPath, rating]
         );
 
-       
         return res.send({
             id: result.insertId,
             titulo,
@@ -54,7 +52,8 @@ export const createPeli = async (req, res) => {
             duracion,
             genero,
             fecha_lanzamiento,
-            portada: portadaPath
+            portada: portadaPath,
+            rating
         });
     } catch (error) {
         console.error(error); 
@@ -64,33 +63,31 @@ export const createPeli = async (req, res) => {
 
 
 export const updatePeli = async (req, res) => {
-    try{
-       
-        const {titulo, descripcion, duracion, genero, fecha_lanzamiento, portada} = req.body
+    try {
+        // Desestructurar el rating junto con los otros campos
+        const { titulo, descripcion, duracion, genero, fecha_lanzamiento, portada, rating } = req.body;
 
-        
-        const [existingPeli] = await pool.query('SELECT * FROM peliculas WHERE id = ? AND enabled = true',[req.params.id])
-        if(existingPeli.length === 0) return res.status(404).json({message: 'Movie not found'})
+        // Verificar que la película existe
+        const [existingPeli] = await pool.query('SELECT * FROM peliculas WHERE id = ? AND enabled = true', [req.params.id]);
+        if (existingPeli.length === 0) return res.status(404).json({ message: 'Movie not found' });
 
-        
-        const[result] = await pool.query('UPDATE peliculas SET ? WHERE id = ? ',[
-            {titulo, descripcion, duracion, genero, fecha_lanzamiento, portada},
+        // Actualizar la película incluyendo el rating
+        const [result] = await pool.query('UPDATE peliculas SET ? WHERE id = ?', [
+            { titulo, descripcion, duracion, genero, fecha_lanzamiento, portada, rating },
             req.params.id
-        ]) 
+        ]);
 
-        
-        if (result.affectedRows === 0){
-            return res.status(404).json({message: 'Movie not found'})   
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: 'Movie not found' });
         }
 
-        
-        const[updatePeli] = await pool.query('SELECT * FROM peliculas WHERE id = ?',[req.params.id])
-        
-        res.json(updatePeli[0])
-    }catch(error){
-        res.status(500).json({message: 'Internal server error'})
+        const [updatedPeli] = await pool.query('SELECT * FROM peliculas WHERE id = ?', [req.params.id]);
+
+        res.json(updatedPeli[0]);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-}
+};
 
 
 export const deletePeli = async (req, res) =>{
