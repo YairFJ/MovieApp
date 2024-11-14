@@ -35,7 +35,6 @@ function ModalMovies({ show, handleClose }) {
     portada: null,
     rating: 2.5, // Añadimos el campo para rating
   });
-
   const [loading, setLoading] = useState(true); // Estado de carga de géneros
 
   useEffect(() => {
@@ -54,10 +53,34 @@ function ModalMovies({ show, handleClose }) {
   // Manejar cambios en los inputs de texto
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+    // Validación para descripcion (max 255 caracteres y no permite caracteres especiales)
+    if (name === 'descripcion') {
+      if (value.length <= 255 && /^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s.,!?()-]*$/.test(value)) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    }
+
+    // Validación para duracion (solo números enteros)
+    if (name === 'duracion') {
+      if (/^\d*$/.test(value)) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    }
+
+    // Para otros campos sin validación especial
+    if (name !== 'descripcion' && name !== 'duracion') {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   // Manejar cambios en el input de archivo
@@ -86,10 +109,11 @@ function ModalMovies({ show, handleClose }) {
       alert('Por favor, selecciona un género.');
       return;
     }
+
     console.log('Generando data para enviar:', formData);
+
     const data = new FormData();
 
-    
     // Añadir todos los campos al FormData
     for (let key in formData) {
       data.append(key, formData[key]);
@@ -121,7 +145,7 @@ function ModalMovies({ show, handleClose }) {
       console.error('Error al guardar la película:', error);
     }
   };
-  
+
   return (
     <Modal show={show} onHide={handleClose} backdrop="static">
       <Modal.Header closeButton>

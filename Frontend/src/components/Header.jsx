@@ -19,7 +19,7 @@ function Header({ onSearch }) {
         
         {/* Botón para abrir el modal */}
         <button onClick={handleShowModal} className="open-modal-btn">
-          +
+         +
         </button>
 
         {/* Pasar el estado del modal como prop */}
