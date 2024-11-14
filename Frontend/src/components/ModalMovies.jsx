@@ -19,7 +19,7 @@ const VisuallyHiddenInput = styled('input')({
   bottom: 0,
   left: 0,
   whiteSpace: 'nowrap',
-  width: 1,
+  width: 1, 
 });
 
 
@@ -148,7 +148,7 @@ function ModalMovies({ show, handleClose }) {
 
   return (
     <Modal show={show} onHide={handleClose} backdrop="static">
-      <Modal.Header closeButton>
+      <Modal.Header>
         <Modal.Title className="title-modal">Agregar Película</Modal.Title>
       </Modal.Header>
 
@@ -214,7 +214,7 @@ function ModalMovies({ show, handleClose }) {
             value={formData.fecha_lanzamiento}
             onChange={handleChange}
           />
-
+          
           <MuiButton
             component="label"
             variant="contained"
