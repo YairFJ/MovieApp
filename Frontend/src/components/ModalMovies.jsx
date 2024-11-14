@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
@@ -22,18 +22,34 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-const movies = ['Accion', 'Comedia', 'Ciencia Ficcion'];
+
 
 function ModalMovies({ show, handleClose }) {
+  const [movies, setMovies] = useState([]); // Géneros que vendrán de la base de datos
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
     duracion: '',
-    genero: '',
+    genero: null,
     fecha_lanzamiento: '',
     portada: null,
     rating: 2.5, // Añadimos el campo para rating
   });
+
+  const [loading, setLoading] = useState(true); // Estado de carga de géneros
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/generos')
+      .then((response) => {
+        console.log('Géneros obtenidos:', response.data);
+        setMovies(response.data); // Asegúrate de que cada objeto tenga { id, nombre }
+        setLoading(false); // Los géneros fueron cargados
+      })
+      .catch((error) => {
+        console.error('Error al obtener los géneros:', error);
+        setLoading(false); // Finaliza la carga en caso de error
+      });
+  }, []);
 
   // Manejar cambios en los inputs de texto
   const handleChange = (e) => {
@@ -65,8 +81,15 @@ function ModalMovies({ show, handleClose }) {
   // Enviar el formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.genero) {
+      alert('Por favor, selecciona un género.');
+      return;
+    }
+    console.log('Generando data para enviar:', formData);
     const data = new FormData();
 
+    
     // Añadir todos los campos al FormData
     for (let key in formData) {
       data.append(key, formData[key]);
@@ -86,7 +109,7 @@ function ModalMovies({ show, handleClose }) {
         titulo: '',
         descripcion: '',
         duracion: '',
-        genero: '',
+        genero: null,
         fecha_lanzamiento: '',
         portada: null,
         rating: 2.5, // Resetear el rating
@@ -98,7 +121,7 @@ function ModalMovies({ show, handleClose }) {
       console.error('Error al guardar la película:', error);
     }
   };
-
+  
   return (
     <Modal show={show} onHide={handleClose} backdrop="static">
       <Modal.Header>
@@ -134,13 +157,18 @@ function ModalMovies({ show, handleClose }) {
           />
 
           <Autocomplete
-            disablePortal
             options={movies}
-            sx={{ width: 300 }}
-            value={formData.genero}
-            onChange={(e, newValue) => setFormData({ ...formData, genero: newValue })}
+            getOptionLabel={(option) => option.nombre}
+            onChange={(event, value) => {
+              console.log("Opción seleccionada:", value);
+              setFormData((prevFormData) => ({
+                ...prevFormData,
+                genero: value ? value.id : null, // Aseguramos que se guarde el id
+              }));
+              console.log("ID del género seleccionado:", value ? value.id : null); // Verifica el ID seleccionado
+            }}
             renderInput={(params) => (
-              <TextField {...params} label="Genero" />
+              <TextField {...params} label="Género" variant="outlined" />
             )}
           />
 
@@ -175,15 +203,20 @@ function ModalMovies({ show, handleClose }) {
               accept="image/*"
             />
           </MuiButton>
+
+          <MuiButton
+            type="submit"
+            className="w-100 btn-agregar"
+            variant="primary"
+          >
+            Agregar
+          </MuiButton>
         </form>
       </Modal.Body>
 
       <Modal.Footer>
         <MuiButton onClick={handleClose} className="btn-cerrar">
           Cerrar
-        </MuiButton>
-        <MuiButton className="w-100 btn-agregar" type="submit" variant="primary" onClick={handleSubmit}>
-          Agregar
         </MuiButton>
       </Modal.Footer>
     </Modal>
