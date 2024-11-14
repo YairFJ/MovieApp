@@ -4,7 +4,7 @@ import { PORT } from './config.js';
 
 import indexRoutes from './routes/index.routes.js';
 
-
+import generosRoutes from './routes/genero.routes.js'
 import pelisRouters from './routes/pelis.routes.js';
 
 
@@ -25,7 +25,7 @@ app.use('/api', indexRoutes)
 
 app.use('/api', pelisRouters)
 /* app.use('/api',actorRouters) */
-
+app.use('/api', generosRoutes); 
 
 
 /* app.use('/api', seriesRouters) */

@@ -41,7 +41,7 @@ export const createPeli = async (req, res) => {
 
         // Incluir el rating en la consulta de inserción
         const [result] = await pool.query(
-            'INSERT INTO peliculas (titulo, descripcion, duracion, genero, fecha_lanzamiento, portada, rating) VALUES (?,?,?,?,?,?,?)',
+            'INSERT INTO peliculas (titulo, descripcion, duracion, genero_id, fecha_lanzamiento, portada, rating) VALUES (?,?,?,?,?,?,?)',
             [titulo, descripcion, duracion, genero, fecha_lanzamiento, portadaPath, rating]
         );
 
