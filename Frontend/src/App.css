@@ -233,10 +233,16 @@ a:nth-of-type(2) .logo {
   gap: 20px;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   margin-top: 20px;
+  margin: 20px 40px; /* Márgenes izquierdo y derecho de 40px */
 }
 
 .movie-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Espaciado entre el título y el rating */
+  align-items: center;
   padding: 15px;
+  height: 100px; /* Ajusta según el espacio que necesites */
 }
 
 .movie-poster {
@@ -250,6 +256,8 @@ a:nth-of-type(2) .logo {
   color: #ffd700;
   display: flex;
   font-weight: bold;
+  margin-top: auto; /* Empuja el rating para abajo */
+  justify-content: center;
 }
 
 .movie-release-date {
@@ -260,7 +268,8 @@ a:nth-of-type(2) .logo {
 .movie-title {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 5px;
+  text-align: center;
+  flex-shrink: 0; /* Evita que el título se reduzca de tamaño */
 }
 
 .read-the-docs {
