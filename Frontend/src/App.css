@@ -256,7 +256,7 @@ a:nth-of-type(2) .logo {
   color: #ffd700;
   display: flex;
   font-weight: bold;
-  margin-top: auto; /* Empuja el rating hacia abajo */
+  margin-top: auto; /* Empuja el rating para abajo */
   justify-content: center;
 }
 
