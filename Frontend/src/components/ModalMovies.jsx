@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal } from 'react-bootstrap';
 import Rating from '@mui/material/Rating';
 import Stack from '@mui/material/Stack';
@@ -7,6 +7,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
 import MuiButton from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import Swal from 'sweetalert2';
 import axios from 'axios';
 
 // Ocultar input de archivo visualmente
@@ -19,10 +20,8 @@ const VisuallyHiddenInput = styled('input')({
   bottom: 0,
   left: 0,
   whiteSpace: 'nowrap',
-  width: 1, 
+  width: 1,
 });
-
-
 
 function ModalMovies({ show, handleClose }) {
   const [movies, setMovies] = useState([]); // Géneros que vendrán de la base de datos
@@ -35,7 +34,6 @@ function ModalMovies({ show, handleClose }) {
     portada: null,
     rating: 2.5, // Añadimos el campo para rating
   });
-
   const [loading, setLoading] = useState(true); // Estado de carga de géneros
 
   useEffect(() => {
@@ -54,10 +52,34 @@ function ModalMovies({ show, handleClose }) {
   // Manejar cambios en los inputs de texto
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+
+    // Validación para descripcion (max 255 caracteres y no permite caracteres especiales)
+    if (name === 'descripcion') {
+      if (value.length <= 255 && /^[a-zA-Z0-9áéíóúÁÉÍÓÚ\s.,!?()-]*$/.test(value)) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    }
+
+    // Validación para duracion (solo números enteros)
+    if (name === 'duracion') {
+      if (/^\d*$/.test(value)) {
+        setFormData({
+          ...formData,
+          [name]: value,
+        });
+      }
+    }
+
+    // Para otros campos sin validación especial
+    if (name !== 'descripcion' && name !== 'duracion') {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
   };
 
   // Manejar cambios en el input de archivo
@@ -83,13 +105,18 @@ function ModalMovies({ show, handleClose }) {
     e.preventDefault();
 
     if (!formData.genero) {
-      alert('Por favor, selecciona un género.');
+      Swal.fire({
+        title: "Error",
+        text: "Error de campos!",
+        icon: "error"
+      });
       return;
     }
+
     console.log('Generando data para enviar:', formData);
+
     const data = new FormData();
 
-    
     // Añadir todos los campos al FormData
     for (let key in formData) {
       data.append(key, formData[key]);
@@ -103,6 +130,11 @@ function ModalMovies({ show, handleClose }) {
         },
       });
       console.log('Película guardada:', response.data);
+      Swal.fire({
+        title: "Éxito",
+        text: "Pelicula guardada con éxito!",
+        icon: "success"
+      });
 
       // Resetear el formulario después de guardar la película
       setFormData({
@@ -118,10 +150,15 @@ function ModalMovies({ show, handleClose }) {
       // Cerrar el modal después de guardar
       handleClose();
     } catch (error) {
-      console.error('Error al guardar la película:', error);
+      console.log(error)
+      Swal.fire({
+        title: "Error",
+        text: "Error al guardar la pelicula!",
+        icon: "error"
+      });
     }
   };
-  
+
   return (
     <Modal show={show} onHide={handleClose} backdrop="static">
       <Modal.Header>
@@ -160,12 +197,12 @@ function ModalMovies({ show, handleClose }) {
             options={movies}
             getOptionLabel={(option) => option.nombre}
             onChange={(event, value) => {
-              console.log("Opción seleccionada:", value);
+              console.log('Opción seleccionada:', value);
               setFormData((prevFormData) => ({
                 ...prevFormData,
                 genero: value ? value.id : null, // Aseguramos que se guarde el id
               }));
-              console.log("ID del género seleccionado:", value ? value.id : null); // Verifica el ID seleccionado
+              console.log('ID del género seleccionado:', value ? value.id : null); // Verifica el ID seleccionado
             }}
             renderInput={(params) => (
               <TextField {...params} label="Género" variant="outlined" />
@@ -190,7 +227,7 @@ function ModalMovies({ show, handleClose }) {
             value={formData.fecha_lanzamiento}
             onChange={handleChange}
           />
-          
+
           <MuiButton
             component="label"
             variant="contained"
