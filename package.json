@@ -2,6 +2,7 @@
   "dependencies": {
     "install": "^0.13.0",
     "npm": "^10.9.0",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "sweetalert2": "^11.14.5"
   }
 }
