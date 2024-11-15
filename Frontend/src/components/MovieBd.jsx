@@ -60,6 +60,7 @@ function MovieBd() {
             <h2>{selectedPeli.titulo}</h2>
             <p><strong>Descripción:</strong> {selectedPeli.descripcion}</p>
             <p><strong>Fecha de creación:</strong> {formatFecha(selectedPeli.fecha_lanzamiento)}</p>
+            <p><strong>Duracion:</strong> {selectedPeli.duracion} minutos</p>
             <p><strong>Rating:</strong> {selectedPeli.rating} / 5.0</p>
             <button onClick={closeModal}>Cerrar</button>
           </div>
